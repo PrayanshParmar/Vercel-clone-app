@@ -3,4 +3,4 @@ const clusterConfig = {
     TASK: String(process.env.TASK_ARN),
 };
 
-module.exports = clusterConfig;
+export default clusterConfig;
