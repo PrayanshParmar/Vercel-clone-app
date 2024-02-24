@@ -13,7 +13,9 @@ WORKDIR /home/app
 COPY main.sh main.sh
 COPY script.js script.js
 COPY config/s3.connector.js config/s3.connector.js
+COPY config/kafka.connector.js config/kafka.connector.js 
 COPY package.json package.json
+COPY config/kafka.pem config/kafka.pem
 
 RUN npm install
 
