@@ -6,12 +6,15 @@ import {
 } from "@clerk/nextjs";
 import { ModeToggle } from "@/components/mode-toogle";
 import initialProfile from "@/lib/initial-profile";
+import { redirect } from "next/navigation";
+
 
 export default async function Home() {
-  const user = await currentUser();
+
 
   const profile = await initialProfile();
-  if (profile === null) {
+
+  if (!profile) {
     return (
       <>
         <div>Home Page</div>
@@ -20,12 +23,8 @@ export default async function Home() {
     );
   }
 
-  return (
-    <div className=" flex flex-col items-center justify-center gap-2">
-      <p className=" text-xl font-bold text-blue-300">Hello there</p>
-      <UserButton></UserButton>
-      <SignOutButton />
-      <ModeToggle />
-    </div>
-  );
+ 
+
+   return redirect(`/dashboard/${profile.username}-projects`)
+  
 }

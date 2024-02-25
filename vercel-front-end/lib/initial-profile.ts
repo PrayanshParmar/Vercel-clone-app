@@ -1,34 +1,22 @@
 import { currentUser } from "@clerk/nextjs";
-
-import { db } from "@/lib/db";
+import { auth } from "@clerk/nextjs";
 
 const initialProfile = async () => {
   const user = await currentUser();
 
   if (!user) {
     return null;
-}
-
-  const profile = await db.users.findUnique({
-    where: {
-      userId: user?.id,
-    },
-  });
-
-  if (profile){
-    return profile;
   }
 
-  const newProfile = await db.users.create({
-    data:{
-        userId: String(user?.id),
-        username: String(user?.username),
-        email: String(user?.emailAddresses[0].emailAddress),
-        imageUrl: String(user?.imageUrl)
-    }
-  })
+  const { getToken } = auth();
 
-  return newProfile;
+  const profile = await fetch("http://localhost:9000/api/v1/user", {
+    method: "POST",
+  headers: { Authorization: `Bearer ${await getToken()}` },
+
+}).then(res => res.json());
+
+ return profile;
 };
 
 export default initialProfile;
