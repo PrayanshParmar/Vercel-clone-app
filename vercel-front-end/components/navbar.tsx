@@ -20,7 +20,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
 import { SearchTeams } from "./navbar-component/search-teams";
 import { UserButton } from "@clerk/nextjs";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 interface NavBarProps {
   projectName?: string;
@@ -32,7 +36,52 @@ const NavBar = async ({ projectName }: NavBarProps) => {
   if (!profile) {
     return (
       <>
-        <div>home nav</div>
+        <nav className=" bg-white dark:bg-[#0A0A0A] h-[75px] w-full px-4 sm:px-6 flex  items-center">
+          <div className=" flex flex-1 mr-auto">
+            <ThemedImage folder="logo" width={105} height={34} />
+          </div>
+          <div className="h-fit hidden md:flex items-center gap-2 ">
+            <Button variant="ghost" className=" h-[32px] text-[13.8px] px-2">
+              Help
+            </Button>
+            <Button variant="ghost" className=" h-[32px] text-[13.8px] px-2">
+              Docs
+            </Button>
+            <div className=" w-fit h-[32px]  ">
+              <ModeToggle />
+            </div>
+            <Button variant="outline" className=" h-[32px] text-[13.8px] px-2">
+              Sign in
+            </Button>
+            <Button variant="default" className=" h-[32px] text-[13.8px] px-2">
+              Sign up
+            </Button>
+          </div>
+          <div className="h-fit flex md:hidden items-center">
+            <Sheet>
+              <SheetTrigger>
+                <Menu />
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Are you absolutely sure?</SheetTitle>
+                  <SheetDescription>
+                    This action cannot be undone. This will permanently delete
+                    your account and remove your from our servers.
+                  </SheetDescription>
+                  <DropdownMenu>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>HEllo</DropdownMenuItem>
+                      <DropdownMenuItem>HEllo</DropdownMenuItem>
+                      <DropdownMenuItem>HEllo</DropdownMenuItem>
+                      <DropdownMenuItem>HEllo</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </nav>
       </>
     );
   }
@@ -42,7 +91,7 @@ const NavBar = async ({ projectName }: NavBarProps) => {
       <div className=" flex flex-1 mr-auto">
         <ol className=" list-none max-w-full flex items-center">
           <li className=" hidden md:flex">
-            <ThemedImage width={25} height={21.65} />
+            <ThemedImage folder="icon" width={25} height={21.65} />
           </li>
           <li className="mx-[7px] hidden md:flex items-center ">
             <Slash
@@ -87,7 +136,7 @@ const NavBar = async ({ projectName }: NavBarProps) => {
         <div className=" w-fit h-[32px]  ">
           <ModeToggle />
         </div>
-        <div className=" pl-2" >
+        <div className=" pl-2">
           <UserButton
             appearance={{
               elements: {
@@ -114,26 +163,17 @@ const NavBar = async ({ projectName }: NavBarProps) => {
               <SheetTitle>Are you absolutely sure?</SheetTitle>
               <SheetDescription>
                 This action cannot be undone. This will permanently delete your
-                account and remove your  from our servers.
+                account and remove your from our servers.
               </SheetDescription>
               <DropdownMenu>
-              <DropdownMenuContent>
-              <DropdownMenuItem>
-                  HEllo
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  HEllo
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  HEllo
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  HEllo
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>HEllo</DropdownMenuItem>
+                  <DropdownMenuItem>HEllo</DropdownMenuItem>
+                  <DropdownMenuItem>HEllo</DropdownMenuItem>
+                  <DropdownMenuItem>HEllo</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </SheetHeader>
-           
           </SheetContent>
         </Sheet>
       </div>
