@@ -1,22 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 
-// Decode the base64 string from the environment variable
-const caPemBase64 = process.env.PRISMA_CA_PEM_BASE64;
-if (!caPemBase64) {
+const decodeCaPem = () => {
+  const caPemBase64 = process.env.PRISMA_CA_PEM_BASE64;
+  if (!caPemBase64) {
     throw new Error('Environment variable PRISMA_CA_PEM_BASE64 is not set.');
-}
+  }
 
-const caPem = Buffer.from(caPemBase64, 'base64').toString('utf-8');
+  const caPem = Buffer.from(caPemBase64, 'base64').toString('utf-8');
+  const prismaFolderPath = path.join(process.cwd(), 'prisma');
+  const caPemPath = path.join(prismaFolderPath, 'ca.pem');
 
-// Write the decoded content to the Prisma folder
-const prismaFolderPath = path.join(__dirname, 'prisma');
-const caPemPath = path.join(prismaFolderPath, 'ca.pem');
-
-// Ensure the Prisma directory exists
-if (!fs.existsSync(prismaFolderPath)) {
+  if (!fs.existsSync(prismaFolderPath)) {
     fs.mkdirSync(prismaFolderPath);
-}
+  }
 
-// Write the file
-fs.writeFileSync(caPemPath, caPem);
+  fs.writeFileSync(caPemPath, caPem);
+  console.log(`CA certificate written to ${caPemPath}`);
+};
+
+decodeCaPem();
