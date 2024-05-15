@@ -6,7 +6,7 @@ const kafkaClient = new Kafka({
   clientId: `api-server`,
   brokers: [String(process.env.KAFKA_URL)],
   ssl: {
-    ca: [fs.readFileSync(path.join(__dirname, "kafka.pem"), "utf-8")],
+    ca: [fs.readFileSync(path.join(__dirname, "ca.pem"), "utf-8")],
   },
   sasl: {
     username: String(process.env.KAFKA_ADMIN),

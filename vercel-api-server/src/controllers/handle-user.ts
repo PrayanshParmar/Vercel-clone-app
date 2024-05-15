@@ -1,40 +1,68 @@
 import express from "express";
-import { z } from "zod";
 import prisma from "../db/prisma-client";
+import clerkClient from "@clerk/clerk-sdk-node";
 
 export const createUser = async (
   req: express.Request,
   res: express.Response
 ) => {
-  const schema = z.object({
-    userId: z.string(),
-    username: z.string(),
-    email: z.string(),
-    imageUrl: z.string().url(),
-  });
-
-  const safeParseResult = schema.safeParse(req.body);
-
-  if (safeParseResult.success === false) {
-    return res.status(400).json({ message: `${safeParseResult.error}` });
-  }
-
-  const { userId, email, username, imageUrl } = safeParseResult.data;
-
   try {
-    const newProfile = await prisma.user.create({
-      data: {
-        userId,
-        username,
-        email,
-        imageUrl,
+    const { userId } = req.auth;
+
+    const user = await clerkClient.users.getUser(String(userId));
+
+    const profile = await prisma.user.findUnique({
+      where: {
+        userId: user.id,
       },
     });
 
-    res.status(200).json({ data: newProfile });
+    if (profile) {
+      return res.status(200).json(profile);
+    }
+
+    const newProfile = await prisma.user.create({
+      data: {
+        userId: String(user?.id),
+        username: String(user?.username),
+        email: String(user?.emailAddresses[0].emailAddress),
+        imageUrl: String(user?.imageUrl),
+      },
+    });
+
+    console.log("data",newProfile);
+    res.status(200).json(newProfile);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ data: "Internal server error" });
   }
-
-  return res;
 };
+
+
+export const findUser = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const { userId } = req.auth;
+
+    const user = await clerkClient.users.getUser(String(userId));
+
+    const profile = await prisma.user.findUnique({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    if (!profile) {
+      return res.status(401).json({data: "unauthorized"});
+
+    }
+    console.log("data",profile);
+    return res.status(200).json(profile);
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ data: "Internal server error" });
+  }
+}

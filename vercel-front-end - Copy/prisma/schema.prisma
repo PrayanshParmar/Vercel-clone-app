@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DeploymentStaus {
+  NOT_STARTED
+  QUEUED
+  IN_PROGRESS
+  READY
+  FAILED
+}
+
+model User {
+  id       String @id @default(uuid())
+  userId   String @unique @map("user_id")
+  email    String @db.Text
+  username String @unique
+  imageUrl String @map("image_url") @db.Text
+
+  Projects Project[]
+  Feedback Feedback[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum installCommands {
+  NPM_INSTALL
+  YARN_INSTALL
+  PNPM_INSTALL
+  BUN_INSTALL
+}
+
+enum BuildCommands {
+  NPM_RUN_BUILD
+  YARN_RUN_BUILD
+  PNPM_RUN_BUILD
+  BUN_RUN_BUILD
+}
+
+model Project {
+  id                   String          @id @default(uuid())
+  name                 String
+  full_name            String
+  gitUrl               String          @map("git_url")
+  subDomain            String          @map("subdomain")
+  userId               String          @map("user_id")
+  users                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch               String
+  rootDirectory        String          @default("./") @map("root_directory")
+  outDirectory         String?         @map("out_directory")
+  installCommand       installCommands @default(NPM_INSTALL) @map("install_command")
+  buildCommand         BuildCommands   @default(NPM_RUN_BUILD) @map("build_command")
+  environmentVariables Json?           @map("environment_variables")
+  Deployment           Deployment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Deployment {
+  id        String          @id @default(uuid())
+  projects  Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String          @map("project_id")
+  status    DeploymentStaus @default(NOT_STARTED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Feedback {
+  id       String @id @default(uuid())
+  feedback String
+  userId   String @unique @map("user_id")
+  users    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

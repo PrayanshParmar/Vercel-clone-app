@@ -3,6 +3,6 @@ import { getLogs } from '../controllers/handle-logs';
 
 
 export default (router: express.Router) => {
-  router.post('/api/v1/logs/:id',getLogs);
+  router.get('/api/v1/logs/:id',getLogs);
 
 };
