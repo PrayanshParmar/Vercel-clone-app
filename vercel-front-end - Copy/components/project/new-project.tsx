@@ -24,7 +24,7 @@ const NewProject = () => {
           </Link>
           <div className=" flex flex-col  items-start justify-start">
             <h1 className=" font-bold text-[40px] dark:text-white text-black ">
-              You're almost done.
+              You&apos;re almost done.
             </h1>
             <p className=" text-sm font-medium dark:text-[#a1a1a1]">
               Please follow the steps to configure your Project and deploy it.

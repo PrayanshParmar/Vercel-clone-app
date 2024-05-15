@@ -82,6 +82,7 @@ const ConfigureProject = ({ setDeployId }: ConfigureProjectProps) => {
     form.setValue("full_name", full_name);
     findBranch();
     findCloneUrl();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [full_name]);
 
   const { control } = form;
