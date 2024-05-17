@@ -11,7 +11,7 @@ const DashboardSKL = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-4 ">
-          <Card>
+          <Card className="dark:bg-[#0A0A0A] bg-white" >
             <CardContent>
               <div className=" flex flex-col gap-4 ">
                 <div className=" flex items-center justify-between w-full h-full pt-2">
@@ -34,7 +34,7 @@ const DashboardSKL = () => {
               <Skeleton className=" w-[110px] h-5 " />
             </CardFooter>
           </Card>
-          <Card>
+          <Card className="dark:bg-[#0A0A0A] bg-white">
             <CardContent>
               <div className=" flex flex-col gap-4 ">
                 <div className=" flex items-center justify-between w-full h-full pt-2">
@@ -57,7 +57,7 @@ const DashboardSKL = () => {
               <Skeleton className=" w-[110px] h-5 " />
             </CardFooter>
           </Card>
-          <Card>
+          <Card className="dark:bg-[#0A0A0A] bg-white">
             <CardContent>
               <div className=" flex flex-col gap-4 ">
                 <div className=" flex items-center justify-between w-full h-full pt-2">

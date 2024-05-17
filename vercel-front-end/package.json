@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "node decode-ca-pem.js && prisma generate"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@aws-sdk/client-ecs": "^3.569.0",

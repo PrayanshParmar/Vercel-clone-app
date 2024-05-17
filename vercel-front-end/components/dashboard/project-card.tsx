@@ -36,11 +36,9 @@ const ProjectCard =  ({
   username
 }: ProjectCardProps) => {
 
-  const handleClick = () => {
-      redirect(`/dashboard/${username}-projects/${name}`);
-  };
+
   return (
-    <Link href={`/dashboard/${username}-projects/${name}`} >
+    <Link href={`/dashboard/${username}-projects/${name}`}  passHref>
     <Card  className="dark:bg-[#0A0A0A] bg-white dark:hover:border-white hover:border-black">
       <CardContent>
         <div className=" flex flex-col gap-4 ">

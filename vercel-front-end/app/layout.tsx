@@ -10,8 +10,8 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "Hostify",
-  description: "Vercel clone App, contributed by Prayansh Parmar",
+  title: "Hostify: Build and deploy the best way experiences with The Frontend Cloud",
+  description: "Hostify Frontend Cloud gives developers the frameworks, workflows, and infrastructure to build a faster, more",
 };
 
 export default function RootLayout({
