@@ -7,7 +7,7 @@ export const getLogs = async (
 ) => {
   const id = req.params.id;
   const logs = await clickHouseClient.query({
-    query: `SELECT event_id, deployment_id, log, timestamp from log_events where deployment_id = {deployment_id:String}`,
+    query: `SELECT event_id, deployment_id, log, status, timestamp from log_events where deployment_id = {deployment_id:String} ORDER BY timestamp ASC`,
     query_params: {
       deployment_id: id,
     },

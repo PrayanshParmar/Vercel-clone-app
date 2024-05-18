@@ -49,15 +49,14 @@ async function initKafkaConsumer() {
       for (const message of messages) {
         if (!message.value) continue;
         const stringMessage = message.value.toString("utf-8");
-        const { PROJECT_ID, DEPLOYMENT_ID, log } = JSON.parse(stringMessage);
-        console.log({ log, DEPLOYMENT_ID });
+        const { DEPLOYMENT_ID, log, status } = JSON.parse(stringMessage);
+        console.log({ log, status, DEPLOYMENT_ID });
         try {
-          const { query_id } = await clickHouseClient.insert({
+           await clickHouseClient.insert({
             table: "log_events",
-            values: [{ event_id: uuidv4(), deployment_id: DEPLOYMENT_ID, log }],
+            values: [{ event_id: uuidv4(), deployment_id: DEPLOYMENT_ID, log, status }],
             format: "JSONEachRow",
           });
-          console.log(query_id);
           resolveOffset(message.offset);
           //@ts-ignore
           await commitOffsetsIfNecessary(message.offset);
