@@ -16,7 +16,7 @@ const ProjectSKL = () => {
           <div className="flex flex-col items-start space-y-2">
             <h3 className="font-medium text-2xl">Production Deployment</h3>
             <span className="dark:text-[#A1A1A1] text-sm">
-              The deployment that is available to your visitors.
+              The deployment that is available to your visitors&#46;
             </span>
           </div>
           <div className="hidden md:flex gap-2 items-center justify-center">

@@ -84,7 +84,7 @@ const ProjectDetails = ({ User }: UserProps) => {
           <div className="flex flex-col items-start space-y-2">
             <h3 className="font-medium text-2xl">Production Deployment</h3>
             <span className="dark:text-[#A1A1A1] text-sm">
-              The deployment that is available to your visitors.
+              The deployment that is available to your visitors&#46;
             </span>
           </div>
           <div className="hidden md:flex gap-2 items-center justify-center">
@@ -184,7 +184,7 @@ const ProjectDetails = ({ User }: UserProps) => {
         <div className="w-full dark:bg-[#0A0A0A] bg-white rounded-md border p-6">
           <div className="w-full flex flex-col items-center justify-center gap-3  sm:flex-row sm:justify-between sm:gap-0  ">
             <span className="text-sm dark:text-[#A1A1A1] sm:line-clamp-1">
-              To update your Production Deployment, push to the "main" branch.
+              To update your Production Deployment&#44; push to the &quot;main&quot; branch&#46;
             </span>
             <Button variant="outline" size="sm">
               Learn More
