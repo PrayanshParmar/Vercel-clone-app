@@ -16,7 +16,6 @@ COPY config/s3.connector.js config/s3.connector.js
 COPY config/kafka.connector.js config/kafka.connector.js 
 COPY package.json package.json
 COPY config/kafka.pem config/kafka.pem
-
 RUN npm install
 
 RUN chmod +x main.sh
