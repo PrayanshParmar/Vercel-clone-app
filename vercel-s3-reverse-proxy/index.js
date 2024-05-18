@@ -4,8 +4,7 @@ require("dotenv").config();
 const httpProxy = require("http-proxy");
 const PORT = String(process.env.PORT);
 
-const BASE_PATH =
-  "https://vercel-s3-bucket.s3.ap-south-1.amazonaws.com/outputs";
+const BASE_PATH = process.env.BASE_PATH;
 
 const proxy = httpProxy.createProxyServer();
 
@@ -22,6 +21,9 @@ proxy.on("proxyReq", (proxyReq, req, rea) => {
   if (url === "/") {
     proxyReq.path += "index.html";
   }
+});
+proxy.on("error", (err, req, res) => {
+  res.status(500).send('Proxy server error.');
 });
 
 app.listen(PORT, () => {
