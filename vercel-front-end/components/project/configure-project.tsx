@@ -390,7 +390,7 @@ const ConfigureProject = ({ setDeployId }: ConfigureProjectProps) => {
                       />
                     </FormControl>
                     {index !== 0 && (
-                      <Button onClick={() => remove(index)}>Remove</Button>
+                      <Button type="button" onClick={() => remove(index)}>Remove</Button>
                     )}
                   </div>
                 ))}

@@ -33,36 +33,36 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // const command = new RunTaskCommand({
-    //   cluster: clusterConfig.CLUSTER,
-    //   taskDefinition: clusterConfig.TASK,
-    //   launchType: "FARGATE",
-    //   count: 1,
-    //   networkConfiguration: {
-    //     awsvpcConfiguration: {
-    //       subnets: [
-    //         String(process.env.SUBNET_1),
-    //         String(process.env.SUBNET_2),
-    //         String(process.env.SUBNET_3),
-    //       ],
-    //       securityGroups: [String(process.env.SECURITY_GROUPS)],
-    //       assignPublicIp: "ENABLED",
-    //     },
-    //   },
-    //   overrides: {
-    //     containerOverrides: [
-    //       {
-    //         name: String(process.env.CONTAINER_OVERRIDES_NAME),
-    //         environment: [
-    //           { name: "GIT_REPOSITORY__URL", value: project.gitUrl },
-    //           { name: "PROJECT_ID", value: projectId },
-    //           { name: "DEPLOYMENT_ID", value: deployment.id },
-    //         ],
-    //       },
-    //     ],
-    //   },
-    // });
-    // await ecsClient.send(command);
+    const command = new RunTaskCommand({
+      cluster: clusterConfig.CLUSTER,
+      taskDefinition: clusterConfig.TASK,
+      launchType: "FARGATE",
+      count: 1,
+      networkConfiguration: {
+        awsvpcConfiguration: {
+          subnets: [
+            String(process.env.SUBNET_1),
+            String(process.env.SUBNET_2),
+            String(process.env.SUBNET_3),
+          ],
+          securityGroups: [String(process.env.SECURITY_GROUPS)],
+          assignPublicIp: "ENABLED",
+        },
+      },
+      overrides: {
+        containerOverrides: [
+          {
+            name: String(process.env.CONTAINER_OVERRIDES_NAME),
+            environment: [
+              { name: "GIT_REPOSITORY__URL", value: project.gitUrl },
+              { name: "PROJECT_ID", value: projectId },
+              { name: "DEPLOYMENT_ID", value: deployment.id },
+            ],
+          },
+        ],
+      },
+    });
+    await ecsClient.send(command);
 
     return  NextResponse.json(deployment);
   } catch (error) {
