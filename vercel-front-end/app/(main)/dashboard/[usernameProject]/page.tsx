@@ -1,9 +1,6 @@
 import { currentProfile } from "@/lib/current-profile";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { userProjects } from "@/lib/user-projects";
-import NotFoundDashboard from "@/components/dashboard/not-found-dashboard";
-import FoundDashboard from "@/components/dashboard/found-dashboard";
 import Dashboard from "@/components/dashboard/dashboard";
 
 interface usernameProjectProps {
@@ -12,7 +9,6 @@ interface usernameProjectProps {
 
 const Page = async ({ params }: usernameProjectProps) => {
   const profile = await currentProfile();
-  const project = await userProjects();
   
   
 

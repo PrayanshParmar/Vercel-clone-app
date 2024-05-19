@@ -52,9 +52,15 @@ const formSchema = z.object({
 });
 interface ConfigureProjectProps {
   setDeployId: React.Dispatch<React.SetStateAction<string>>;
+  fetchingComplete: boolean;
+  setProjectId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ConfigureProject = ({ setDeployId }: ConfigureProjectProps) => {
+const ConfigureProject = ({
+  setDeployId,
+  fetchingComplete,
+  setProjectId
+}: ConfigureProjectProps) => {
   const searchParams = useSearchParams();
 
   const router = useRouter();
@@ -119,17 +125,21 @@ const ConfigureProject = ({ setDeployId }: ConfigureProjectProps) => {
   };
 
   const [branches, setBranches] = useState<string[]>([]);
+  const [hideform, setHideform] = useState<boolean>(false);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     try {
       await axios
         .post("/api/project", values)
         .then(function (response) {
           form.reset();
-          router.refresh();
-          console.log(response);
+          setHideform(true);
+          setProjectId(response.data.id);
           onDeploy(response.data.id);
+          toast({
+            variant: "success",
+            title: "Deployment started",
+          });
         })
         .catch(function (error) {
           if (error.response) {
@@ -151,10 +161,15 @@ const ConfigureProject = ({ setDeployId }: ConfigureProjectProps) => {
 
   const onDeploy = async (id: string) => {
     try {
+      console.log("enterd");
       await axios
         .post("/api/project/deploy", { projectId: id })
         .then(function (response) {
           setDeployId(response.data.id);
+          toast({
+            variant: "success",
+            title: "Logs will appears shortly",
+          });
         })
         .catch(function (error) {
           if (error.response) {
@@ -173,6 +188,16 @@ const ConfigureProject = ({ setDeployId }: ConfigureProjectProps) => {
       });
     }
   };
+
+  if (hideform) {
+    return (
+      <div className=" w-full flex items-center justify-center ">
+        <Button onClick={() => setHideform(false)} variant="outline" disabled={!fetchingComplete}>
+          Configure Project
+        </Button>
+      </div>
+    );
+  }
   return (
     <>
       <Form {...form}>
@@ -390,7 +415,9 @@ const ConfigureProject = ({ setDeployId }: ConfigureProjectProps) => {
                       />
                     </FormControl>
                     {index !== 0 && (
-                      <Button type="button" onClick={() => remove(index)}>Remove</Button>
+                      <Button type="button" onClick={() => remove(index)}>
+                        Remove
+                      </Button>
                     )}
                   </div>
                 ))}

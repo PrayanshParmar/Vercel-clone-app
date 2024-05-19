@@ -1,5 +1,5 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useRef, useState } from "react";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { extractTime } from "@/lib/date-time-split";
@@ -9,11 +9,17 @@ import {
   AccordionContent,
   AccordionItem,
 } from "../ui/accordion";
-import { AlertCircle, CheckCircle, CheckCircle2, Circle } from "lucide-react";
-import Link from "next/link";
+import { AlertCircle, CheckCircle2, Circle } from "lucide-react";
+import axios from "axios";
+import useLogsStore from "@/hooks/use-log-store";
+import { useRouter } from "next/navigation";
+import { User } from "@prisma/client";
 
 interface DeployedLogsProps {
   deployId: string;
+  projectId: string;
+  setFetchingComplete: (status: boolean) => void;
+  user: User;
 }
 
 interface LogItem {
@@ -21,12 +27,14 @@ interface LogItem {
   log: string;
   timestamp: string;
   status: string;
+  deployId: string;
 }
 
-const DeployedLogs = ({ deployId }: DeployedLogsProps) => {
+const DeployedLogs = ({ deployId, projectId, setFetchingComplete, user }: DeployedLogsProps) => {
   const logContainerRef = useRef<HTMLDivElement>(null);
   const [shouldFetch, setShouldFetch] = useState(true);
-  const [lastStatus, setLastStatus] = useState<string>("");
+  const { errorOrReadyLog, setErrorOrReadyLog, resetLog } = useLogsStore(); // Use Zustand store
+  const router = useRouter();
   const fetchLogs = async () => {
     const response = await fetch(
       `http://localhost:9000/api/v1/logs/${deployId}`
@@ -34,11 +42,24 @@ const DeployedLogs = ({ deployId }: DeployedLogsProps) => {
     return response.json();
   };
 
-  const { data, isPending, error, status, refetch } = useQuery({
+  const { data, isPending, refetch } = useQuery({
     queryKey: ["logs", deployId],
     queryFn: fetchLogs,
     refetchInterval: shouldFetch ? 1000 : false,
     enabled: !!deployId,
+  });
+
+  const updateDeployment = async (data: LogItem) => {
+    await axios.put("/api/project/deploy", { data });
+  };
+
+  const mutation = useMutation({
+    mutationFn: updateDeployment,
+    onSuccess: () => {
+      resetLog();
+      router.push(`/new/${user.username}-projects/success?project-id=${projectId}&deployment-id=${deployId}`)
+      
+    },
   });
 
   useEffect(() => {
@@ -51,11 +72,15 @@ const DeployedLogs = ({ deployId }: DeployedLogsProps) => {
         ["ERROR", "READY"].includes(logItem.status)
       )
     ) {
-      const latestStatus = data.logs.find((logItem: LogItem) =>
+      const latestLog = data.logs.find((logItem: LogItem) =>
         ["ERROR", "READY"].includes(logItem.status)
-      )?.status;
-      setLastStatus(latestStatus || null);
-      setShouldFetch(false);
+      );
+      if (latestLog) {
+        setErrorOrReadyLog({ ...latestLog, deployId }); // Store the entire log item
+        setShouldFetch(false);
+        setFetchingComplete(true);
+        mutation.mutate(latestLog);
+      }
     }
   }, [data]);
 
@@ -64,21 +89,21 @@ const DeployedLogs = ({ deployId }: DeployedLogsProps) => {
       disabled={isPending}
       className="border rounded-2xl"
       type="single"
-      collapsible  
+      collapsible
     >
       <AccordionItem value="item-1">
         <AccordionTrigger className="rounded-t-2xl hover:no-underline px-2 bg-white dark:bg-[#0A0A0A] border-b">
-          <div className=" flex items-center gap-[6px]">
-            {lastStatus === "ERROR" && (
+          <div className="flex items-center gap-[6px]">
+            {errorOrReadyLog?.status === "ERROR" && (
               <AlertCircle className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-red-600" />
             )}
-            {lastStatus === "READY" && (
-              <CheckCircle2  className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-blue-600" />
+            {errorOrReadyLog?.status === "READY" && (
+              <CheckCircle2 className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-blue-600" />
             )}
-            {!["ERROR", "READY"].includes(lastStatus) && (
+            {!["ERROR", "READY"].includes(errorOrReadyLog?.status || "") && (
               <Circle className="w-5 h-5 dark:text-[#a1a1a1]" />
             )}
-            <span className=" line-clamp-1 text-sm sm:text-base" >Building</span>
+            <span className="line-clamp-1 text-sm sm:text-base">Building</span>
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-0">
@@ -103,45 +128,49 @@ const DeployedLogs = ({ deployId }: DeployedLogsProps) => {
       </AccordionItem>
       <AccordionItem value="item-2">
         <AccordionTrigger className="hover:no-underline px-2 bg-white dark:bg-[#0A0A0A] border-b">
-        <div className=" flex items-center gap-[6px]">
-            {lastStatus === "ERROR" && (
+          <div className="flex items-center gap-[6px]">
+            {errorOrReadyLog?.status === "ERROR" && (
               <AlertCircle className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-red-600" />
             )}
-            {lastStatus === "READY" && (
-              <CheckCircle2  className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-blue-600" />
+            {errorOrReadyLog?.status === "READY" && (
+              <CheckCircle2 className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-blue-600" />
             )}
-            {!["ERROR", "READY"].includes(lastStatus) && (
+            {!["ERROR", "READY"].includes(errorOrReadyLog?.status || "") && (
               <Circle className="w-5 h-5 dark:text-[#a1a1a1]" />
             )}
-         <span className=" line-clamp-1 text-sm sm:text-base" >
-          Deployment Summary
-          </span>
+            <span className="line-clamp-1 text-sm sm:text-base">
+              Deployment Summary
+            </span>
           </div>
         </AccordionTrigger>
-        <AccordionContent></AccordionContent>
+        <AccordionContent>
+          {errorOrReadyLog?.status === "ERROR" && (
+            <button className="bg-red-500 text-white px-4 py-2 rounded">
+              Configure Project
+            </button>
+          )}
+        </AccordionContent>
       </AccordionItem>
       <AccordionItem className="border-none" value="item-3">
         <AccordionTrigger className="rounded-b-2xl hover:no-underline px-2 bg-white dark:bg-[#0A0A0A]">
-        <div className=" flex items-center gap-[6px]">
-            {lastStatus === "ERROR" && (
+          <div className="flex items-center gap-[6px]">
+            {errorOrReadyLog?.status === "ERROR" && (
               <AlertCircle className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-red-600" />
             )}
-            {lastStatus === "READY" && (
-              <CheckCircle2  className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-blue-600" />
+            {errorOrReadyLog?.status === "READY" && (
+              <CheckCircle2 className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-blue-600" />
             )}
-            {!["ERROR", "READY"].includes(lastStatus) && (
+            {!["ERROR", "READY"].includes(errorOrReadyLog?.status || "") && (
               <Circle className="w-5 h-5 dark:text-[#a1a1a1]" />
             )}
-         <span className=" line-clamp-1 text-sm  sm:text-base" >
-          Assigning Custom Domains
-          </span>
+            <span className="line-clamp-1 text-sm sm:text-base">
+              Assigning Custom Domains
+            </span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className=" py-3 px-[38px] flex items-center justify-between " >
-            <span>
-              custome domain
-              </span>
-              {/* <Link href={} >Manage</Link> */}
+        <AccordionContent className="py-3 px-[38px] flex items-center justify-between">
+          <span>custom domain</span>
+          {/* <Link href={} >Manage</Link> */}
         </AccordionContent>
       </AccordionItem>
     </Accordion>

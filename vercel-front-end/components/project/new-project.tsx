@@ -6,9 +6,16 @@ import { Separator } from "../ui/separator";
 import ConfigureProject from "./configure-project";
 import DeployedLogs from "./deployed-logs";
 import { useState } from "react";
+import { User } from "@prisma/client";
 
-const NewProject = () => {
+interface NewProjectProps {
+  user: User;
+} 
+
+const NewProject = ({ user}: NewProjectProps) => {
   const [deployId, setDeployId] = useState("");
+  const [projectId, setProjectId] = useState("");
+  const [fetchingComplete, setFetchingComplete] = useState(false); // New state to track fetching status
 
   return (
     <>
@@ -37,12 +44,21 @@ const NewProject = () => {
         <div className=" dark:bg-black bg-white flex  flex-col max-w-[840px] w-full rounded border p-8  ">
           <div className=" text-3xl font-semibold ">Configure Project</div>
           <Separator className=" my-6 " />
-          <ConfigureProject setDeployId={setDeployId} />
+          <ConfigureProject
+            setDeployId={setDeployId}
+            setProjectId={setProjectId}
+            fetchingComplete={fetchingComplete}
+          />
         </div>
         <div className=" dark:bg-black bg-white flex  flex-col max-w-[840px] w-full rounded border p-8  ">
           <div className=" text-3xl font-semibold ">Deploy</div>
           <Separator className=" my-6 " />
-          <DeployedLogs deployId={deployId} />
+          <DeployedLogs
+            deployId={deployId}
+            projectId={projectId}
+            setFetchingComplete={setFetchingComplete}
+            user={user}
+          />
         </div>
       </div>
     </>

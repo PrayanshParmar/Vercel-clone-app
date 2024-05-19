@@ -70,3 +70,36 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+
+
+export async function PUT(req: NextRequest) {
+  try {
+    const {data} = await req.json();
+    console.log(data);
+    const profile = await currentProfile();
+
+
+    if(!data) {
+      return new NextResponse("No data found", { status: 404 });
+
+    }
+    if (!profile) {
+      return new NextResponse("Unauthorized Access", { status: 401 });
+    }
+
+    const deployment  = await db.deployment.update({
+      where: {
+        id: data.deployment_id
+      },
+      data: {
+        status: data.status,
+      }
+    })
+
+   
+    return   NextResponse.json(deployment);
+  } catch (error) {
+    console.log(error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
