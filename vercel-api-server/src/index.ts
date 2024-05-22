@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 const app = express();
 import routes from "./routes";
 import "dotenv/config";
@@ -7,9 +7,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import clickHouseClient from "./config/clickhouse.connector";
 import kafkaClient from "./config/kafka.connector";
-import {
-  StrictAuthProp 
-} from "@clerk/clerk-sdk-node";
+
 
 const PORT = String(process.env.PORT);
 
@@ -21,16 +19,6 @@ const consumer = kafkaClient.consumer({ groupId: "api-server-logs-consumer" });
 
 app.use("/", routes());
 
-declare global {
-  namespace Express {
-    interface Request extends StrictAuthProp  {}
-  }
-}
-
-app.use(( req, res, next) => {
-
-  res.status(401).send('Unauthenticated!');
-  });
 
 async function initKafkaConsumer() {
   await consumer.connect();
