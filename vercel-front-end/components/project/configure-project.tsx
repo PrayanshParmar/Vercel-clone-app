@@ -27,6 +27,9 @@ import axios from "axios";
 import { ActionTooltip } from "../action-tooltip";
 import { HelpCircle } from "lucide-react";
 import { toast } from "../ui/use-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Skeleton } from "../ui/skeleton";
+import { imagePath } from "@/lib/image-path";
 
 const KeyPairSchema = z.object({
   key: z.string(),
@@ -46,6 +49,7 @@ const formSchema = z.object({
   }),
   rootDirectory: z.string(),
   branch: z.string(),
+  framework: z.string(),
   installCommand: z.string().optional(),
   buildCommand: z.string().optional(),
   environmentVariables: KeyPairsSchema.default([]),
@@ -54,12 +58,14 @@ interface ConfigureProjectProps {
   setDeployId: React.Dispatch<React.SetStateAction<string>>;
   fetchingComplete: boolean;
   setProjectId: React.Dispatch<React.SetStateAction<string>>;
+  setProjectName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const ConfigureProject = ({
   setDeployId,
   fetchingComplete,
-  setProjectId
+  setProjectId,
+  setProjectName,
 }: ConfigureProjectProps) => {
   const searchParams = useSearchParams();
 
@@ -78,6 +84,7 @@ const ConfigureProject = ({
       branch: "main" || "master",
       installCommand: "NPM_INSTALL",
       buildCommand: "NPM_RUN_BUILD",
+      framework: "other",
       environmentVariables: [{ key: "", value: "" }],
     },
   });
@@ -135,6 +142,7 @@ const ConfigureProject = ({
           form.reset();
           setHideform(true);
           setProjectId(response.data.id);
+          setProjectName(response.data.name);
           onDeploy(response.data.id);
           toast({
             variant: "success",
@@ -161,7 +169,6 @@ const ConfigureProject = ({
 
   const onDeploy = async (id: string) => {
     try {
-      console.log("enterd");
       await axios
         .post("/api/project/deploy", { projectId: id })
         .then(function (response) {
@@ -192,7 +199,11 @@ const ConfigureProject = ({
   if (hideform) {
     return (
       <div className=" w-full flex items-center justify-center ">
-        <Button onClick={() => setHideform(false)} variant="outline" disabled={!fetchingComplete}>
+        <Button
+          onClick={() => setHideform(false)}
+          variant="outline"
+          disabled={!fetchingComplete}
+        >
           Configure Project
         </Button>
       </div>
@@ -293,6 +304,135 @@ const ConfigureProject = ({
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="framework"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <div className=" flex items-center gap-2">
+                    Framework
+                    <ActionTooltip label="Select the front-end framework">
+                      <HelpCircle strokeWidth={1} size={20} />
+                    </ActionTooltip>
+                  </div>
+                </FormLabel>
+                <Select
+                  disabled={isLoading}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a verified email to display" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="angular">
+                      <div className=" flex items-center gap-2">
+                        <Avatar className=" rounded-none w-5 h-5 ">
+                          <AvatarImage src={imagePath.frameworks.angular} />
+                          <AvatarFallback>
+                            <Skeleton />
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>Angular</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="Astro">
+                      <div className=" flex items-center gap-2">
+                        <Avatar className=" rounded-none w-5 h-5 ">
+                          <AvatarImage src={imagePath.frameworks.astro} />
+                          <AvatarFallback>
+                            <Skeleton />
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>Astro</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="react">
+                      <div className=" flex items-center gap-2">
+                        <Avatar className=" rounded-none w-5 h-5 ">
+                          <AvatarImage src={imagePath.frameworks.react} />
+                          <AvatarFallback>
+                            <Skeleton />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>Create React App</div>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="remix">
+                      <div className=" flex items-center gap-2">
+                        <Avatar className=" rounded-none w-5 h-5 ">
+                          <AvatarImage src={imagePath.frameworks.remix} />
+                          <AvatarFallback>
+                            <Skeleton />
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>remix</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="nuxt">
+                      <div className=" flex items-center gap-2">
+                        <Avatar className=" rounded-none w-5 h-5 ">
+                          <AvatarImage src={imagePath.frameworks.nuxt} />
+                          <AvatarFallback>
+                            <Skeleton />
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>Nuxt</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="svelte">
+                      <div className=" flex items-center gap-2">
+                        <Avatar className=" rounded-none w-5 h-5 ">
+                          <AvatarImage src={imagePath.frameworks.svelte} />
+                          <AvatarFallback>
+                            <Skeleton />
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>Svelte</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="vite">
+                      <div className=" flex items-center gap-2">
+                        <Avatar className=" rounded-none w-5 h-5 ">
+                          <AvatarImage src={imagePath.frameworks.vite} />
+                          <AvatarFallback>
+                            <Skeleton />
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>Vite</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="vue">
+                      <div className=" flex items-center gap-2">
+                        <Avatar className=" rounded-none w-5 h-5 ">
+                          <AvatarImage src={imagePath.frameworks.vue} />
+                          <AvatarFallback>
+                            <Skeleton />
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>Vue</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="other">
+                      <div className=" flex items-center gap-2">
+                        <Avatar className=" rounded-none w-5 h-5 ">
+                          <AvatarImage src={imagePath.frameworks.other} />
+                          <AvatarFallback>
+                            <Skeleton />
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>Other</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

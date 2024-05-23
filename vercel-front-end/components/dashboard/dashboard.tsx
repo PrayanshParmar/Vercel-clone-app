@@ -1,5 +1,5 @@
 "use client";
-import { User } from "@prisma/client";
+import { Project, User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import NotFoundDashboard from "./not-found-dashboard";
 import FoundDashboard from "./found-dashboard";
@@ -8,9 +8,10 @@ import {  AlertCircle } from "lucide-react";
 
 interface UserProps {
   User: User;
+  Project?: Project;
 }
 
-const Dashboard = ({ User }: UserProps) => {
+const Dashboard = ({ User, Project }: UserProps) => {
   const fetchProjects = async () => {
     const response = await fetch("/api/project");
     return response.json();
@@ -37,7 +38,7 @@ const Dashboard = ({ User }: UserProps) => {
     return <NotFoundDashboard User={User} />;
   }
 
-  return <FoundDashboard user={User} projects={data} />;
+  return <FoundDashboard user={User} projects={data}  />;
 };
 
 export default Dashboard;

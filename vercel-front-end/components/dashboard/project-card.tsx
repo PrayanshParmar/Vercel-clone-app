@@ -4,7 +4,6 @@ import { ExternalLink, GitMerge } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { imagePath } from "@/lib/image-path";
 import { Button } from "../ui/button";
-import { redirect } from "next/navigation";
 import { convertToDaysAgo } from "@/lib/date-to-ago";
 import ThemedImage from "../themed-image";
 import {
@@ -24,6 +23,7 @@ interface ProjectCardProps {
   branch: String;
   full_name: String;
   username: String;
+  framework: String;
 }
 
 const ProjectCard =  ({
@@ -33,7 +33,8 @@ const ProjectCard =  ({
   date,
   branch,
   full_name,
-  username
+  username,
+  framework
 }: ProjectCardProps) => {
 
 
@@ -45,7 +46,7 @@ const ProjectCard =  ({
           <div className=" flex items-center justify-between w-full h-full pt-2">
             <div className=" flex items-center  gap-2 ">
               <Avatar className=" rounded-none ">
-                <AvatarImage src={imagePath.react} />
+                <AvatarImage src={`/frameworks/${framework}.svg`}/>
                 <AvatarFallback><Skeleton/></AvatarFallback>
               </Avatar>
               <div className=" flex flex-col items-start justify-start ">
@@ -53,17 +54,12 @@ const ProjectCard =  ({
                 <Link
                   rel="noopener noreferrer"
                   target="_blank"
-                  href={`https://${subdomain}.hostiffy.xyz`}
+                  href={`https://${subdomain}.app.hostiffy.xyz`}
                 >
-                  <div className=" flex items-center  gap-1  dark:text-gray-400 text-gray-600">
-                    <div className=" hover:underline peer ">
-                      {`${subdomain}.hostiffy.xyz`}
+                  <div className=" line-clamp-1   dark:text-gray-400 text-gray-600">
+                    <div className=" line-clamp-1 hover:underline peer ">
+                      {`${subdomain}.app.hostiffy.xyz`}
                     </div>
-                    <ExternalLink
-                      className=" hidden peer-hover:flex pt-[2px]"
-                      width={12}
-                      height={12}
-                    />
                   </div>
                 </Link>
               </div>

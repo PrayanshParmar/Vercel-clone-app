@@ -15,6 +15,7 @@ interface NewProjectProps {
 const NewProject = ({ user}: NewProjectProps) => {
   const [deployId, setDeployId] = useState("");
   const [projectId, setProjectId] = useState("");
+  const [projectName, setProjectName] = useState("");
   const [fetchingComplete, setFetchingComplete] = useState(false); // New state to track fetching status
 
   return (
@@ -47,6 +48,7 @@ const NewProject = ({ user}: NewProjectProps) => {
           <ConfigureProject
             setDeployId={setDeployId}
             setProjectId={setProjectId}
+            setProjectName={setProjectName}
             fetchingComplete={fetchingComplete}
           />
         </div>
@@ -56,6 +58,7 @@ const NewProject = ({ user}: NewProjectProps) => {
           <DeployedLogs
             deployId={deployId}
             projectId={projectId}
+            projectName={projectName}
             setFetchingComplete={setFetchingComplete}
             user={user}
           />

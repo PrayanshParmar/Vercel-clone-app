@@ -1,9 +1,10 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { ecsClient} from "@/lib/aws-ecs-connector"
+import { ecsClient } from "@/lib/aws-ecs-connector";
 import { RunTaskCommand } from "@aws-sdk/client-ecs";
 import { clusterConfig } from "@/lib/cluster-config";
 import { NextRequest, NextResponse } from "next/server";
+import { frameworktodir, getFirstWord, rootDirFind } from "@/lib/buidl-config";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +12,6 @@ export async function POST(req: NextRequest) {
     console.log(projectId);
     const profile = await currentProfile();
 
-    
     if (!projectId) {
       return new NextResponse("No ID found", { status: 404 });
     }
@@ -32,6 +32,14 @@ export async function POST(req: NextRequest) {
         status: "QUEUED",
       },
     });
+
+    const installer = getFirstWord(project.installCommand);
+
+    const builder = getFirstWord(project.buildCommand);
+
+    const rdir = rootDirFind(project.rootDirectory);
+
+    const odir = frameworktodir(project.framework);
 
     const command = new RunTaskCommand({
       cluster: clusterConfig.CLUSTER,
@@ -56,7 +64,12 @@ export async function POST(req: NextRequest) {
             environment: [
               { name: "GIT_REPOSITORY__URL", value: project.gitUrl },
               { name: "PROJECT_ID", value: projectId },
+              { name: "SUBDOMAIN", value: project.subDomain },
               { name: "DEPLOYMENT_ID", value: deployment.id },
+              { name: "INSTALLER", value: installer },
+              { name: "BUILD", value: builder },
+              { name: "OUTDIR", value: odir },
+              { name: "ROOTDIR", value: rdir },
             ],
           },
         ],
@@ -64,40 +77,36 @@ export async function POST(req: NextRequest) {
     });
     await ecsClient.send(command);
 
-    return  NextResponse.json(deployment);
+    return NextResponse.json(deployment);
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
 
-
 export async function PUT(req: NextRequest) {
   try {
-    const {data} = await req.json();
+    const { data } = await req.json();
     console.log(data);
     const profile = await currentProfile();
 
-
-    if(!data) {
+    if (!data) {
       return new NextResponse("No data found", { status: 404 });
-
     }
     if (!profile) {
       return new NextResponse("Unauthorized Access", { status: 401 });
     }
 
-    const deployment  = await db.deployment.update({
+    const deployment = await db.deployment.update({
       where: {
-        id: data.deployment_id
+        id: data.deployment_id,
       },
       data: {
         status: data.status,
-      }
-    })
+      },
+    });
 
-   
-    return   NextResponse.json(deployment);
+    return NextResponse.json(deployment);
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });

@@ -11,5 +11,15 @@ export const imagePath = {
         light: "/github/logo/dark.png",
         dark : "/github/logo/light.png",   
     },
-    react: "/react.ico"
+    frameworks: {
+        angular: "/frameworks/angular.svg",
+        astro: "/frameworks/astro.svg",
+        react: "/frameworks/react.svg",
+        remix: "/frameworks/remix.svg",
+        nuxt: "/frameworks/nuxt.svg",
+        svelte: "/frameworks/svelte.svg",
+        vite: "/frameworks/vite.svg",
+        vue: "/frameworks/vue.svg",
+        other: "/frameworks/other.svg",
+    }
 }

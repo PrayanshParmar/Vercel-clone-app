@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ecs": "^3.569.0",
+    "@aws-sdk/client-s3": "^3.577.0",
     "@clerk/nextjs": "^4.29.7",
     "@hookform/resolvers": "^3.3.4",
     "@prisma/client": "^5.14.0",

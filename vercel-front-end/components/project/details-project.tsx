@@ -93,7 +93,7 @@ const ProjectDetails = ({ User }: UserProps) => {
             <Link
               rel="noopener noreferrer"
               target="_blank"
-              href={`https://${data.subDomain}.hostiffy.xyz`}
+              href={`https://${data.subDomain}.app.hostiffy.xyz`}
             >
               Visit
             </Link>
@@ -174,10 +174,10 @@ const ProjectDetails = ({ User }: UserProps) => {
                 <Link
                   rel="noopener noreferrer"
                   target="_blank"
-                  href={`https://${data.subDomain}.hostiffy.com`}
+                  href={`https://${data.subDomain}.app.hostiffy.xyz`}
                   className="line-clamp-1 hover:underline underline-offset-0 font-medium"
                 >
-                  hostiffy.xyz
+                  {`${data.subDomain}.app.hostiffy.xyz`}
                 </Link>
               </div>
               <div className="w-full flex items-start justify-start gap-4">

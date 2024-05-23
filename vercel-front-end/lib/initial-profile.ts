@@ -9,13 +9,6 @@ const initialProfile = async () => {
     return null;
   }
 
-  //   const { getToken } = auth();
-
-  //   const profile = await fetch("http://localhost:9000/api/v1/user", {
-  //     method: "POST",
-  //   headers: { Authorization: `Bearer ${await getToken()}` },
-
-  // }).then(res => res.json());
 
   const profile = await db.user.findUnique({
     where: {

@@ -14,12 +14,17 @@ import axios from "axios";
 import useLogsStore from "@/hooks/use-log-store";
 import { useRouter } from "next/navigation";
 import { User } from "@prisma/client";
+import { toast } from "../ui/use-toast";
 
+const API_SERVER_URL = process.env.API_SERVER;
+
+console.log(API_SERVER_URL);
 interface DeployedLogsProps {
   deployId: string;
   projectId: string;
   setFetchingComplete: (status: boolean) => void;
   user: User;
+  projectName: string;
 }
 
 interface LogItem {
@@ -30,14 +35,14 @@ interface LogItem {
   deployId: string;
 }
 
-const DeployedLogs = ({ deployId, projectId, setFetchingComplete, user }: DeployedLogsProps) => {
+const DeployedLogs = ({ projectName, deployId, projectId, setFetchingComplete, user }: DeployedLogsProps) => {
   const logContainerRef = useRef<HTMLDivElement>(null);
   const [shouldFetch, setShouldFetch] = useState(true);
   const { errorOrReadyLog, setErrorOrReadyLog, resetLog } = useLogsStore(); // Use Zustand store
   const router = useRouter();
   const fetchLogs = async () => {
     const response = await fetch(
-      `http://localhost:9000/api/v1/logs/${deployId}`
+      `https://csazbvntor3tl6bw4vpnzx2fby0lelhs.lambda-url.ap-south-1.on.aws/api/v1/logs/${deployId}`
     );
     return response.json();
   };
@@ -57,7 +62,11 @@ const DeployedLogs = ({ deployId, projectId, setFetchingComplete, user }: Deploy
     mutationFn: updateDeployment,
     onSuccess: () => {
       resetLog();
-      router.push(`/new/${user.username}-projects/success?project-id=${projectId}&deployment-id=${deployId}`)
+      toast({
+        variant: "success",
+        title: "Deployment completed",
+      });
+      router.push(`/new/${user.username}-projects/${projectName}`)
       
     },
   });
@@ -69,11 +78,11 @@ const DeployedLogs = ({ deployId, projectId, setFetchingComplete, user }: Deploy
 
     if (
       data?.logs.some((logItem: LogItem) =>
-        ["ERROR", "READY"].includes(logItem.status)
+        ["FAILED", "READY"].includes(logItem.status)
       )
     ) {
       const latestLog = data.logs.find((logItem: LogItem) =>
-        ["ERROR", "READY"].includes(logItem.status)
+        ["FAILED", "READY"].includes(logItem.status)
       );
       if (latestLog) {
         setErrorOrReadyLog({ ...latestLog, deployId }); // Store the entire log item
@@ -94,13 +103,13 @@ const DeployedLogs = ({ deployId, projectId, setFetchingComplete, user }: Deploy
       <AccordionItem value="item-1">
         <AccordionTrigger className="rounded-t-2xl hover:no-underline px-2 bg-white dark:bg-[#0A0A0A] border-b">
           <div className="flex items-center gap-[6px]">
-            {errorOrReadyLog?.status === "ERROR" && (
+            {errorOrReadyLog?.status === "FAILED" && (
               <AlertCircle className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-red-600" />
             )}
             {errorOrReadyLog?.status === "READY" && (
               <CheckCircle2 className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-blue-600" />
             )}
-            {!["ERROR", "READY"].includes(errorOrReadyLog?.status || "") && (
+            {!["FAILED", "READY"].includes(errorOrReadyLog?.status || "") && (
               <Circle className="w-5 h-5 dark:text-[#a1a1a1]" />
             )}
             <span className="line-clamp-1 text-sm sm:text-base">Building</span>
@@ -129,13 +138,13 @@ const DeployedLogs = ({ deployId, projectId, setFetchingComplete, user }: Deploy
       <AccordionItem value="item-2">
         <AccordionTrigger className="hover:no-underline px-2 bg-white dark:bg-[#0A0A0A] border-b">
           <div className="flex items-center gap-[6px]">
-            {errorOrReadyLog?.status === "ERROR" && (
+            {errorOrReadyLog?.status === "FAILED" && (
               <AlertCircle className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-red-600" />
             )}
             {errorOrReadyLog?.status === "READY" && (
               <CheckCircle2 className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-blue-600" />
             )}
-            {!["ERROR", "READY"].includes(errorOrReadyLog?.status || "") && (
+            {!["FAILED", "READY"].includes(errorOrReadyLog?.status || "") && (
               <Circle className="w-5 h-5 dark:text-[#a1a1a1]" />
             )}
             <span className="line-clamp-1 text-sm sm:text-base">
@@ -144,7 +153,7 @@ const DeployedLogs = ({ deployId, projectId, setFetchingComplete, user }: Deploy
           </div>
         </AccordionTrigger>
         <AccordionContent>
-          {errorOrReadyLog?.status === "ERROR" && (
+          {errorOrReadyLog?.status === "FAILED" && (
             <button className="bg-red-500 text-white px-4 py-2 rounded">
               Configure Project
             </button>
@@ -154,13 +163,13 @@ const DeployedLogs = ({ deployId, projectId, setFetchingComplete, user }: Deploy
       <AccordionItem className="border-none" value="item-3">
         <AccordionTrigger className="rounded-b-2xl hover:no-underline px-2 bg-white dark:bg-[#0A0A0A]">
           <div className="flex items-center gap-[6px]">
-            {errorOrReadyLog?.status === "ERROR" && (
+            {errorOrReadyLog?.status === "FAILED" && (
               <AlertCircle className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-red-600" />
             )}
             {errorOrReadyLog?.status === "READY" && (
               <CheckCircle2 className="w-6 h-6 text-white dark:text-[#0A0A0A] fill-blue-600" />
             )}
-            {!["ERROR", "READY"].includes(errorOrReadyLog?.status || "") && (
+            {!["FAILED", "READY"].includes(errorOrReadyLog?.status || "") && (
               <Circle className="w-5 h-5 dark:text-[#a1a1a1]" />
             )}
             <span className="line-clamp-1 text-sm sm:text-base">

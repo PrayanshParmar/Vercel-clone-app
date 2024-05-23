@@ -60,6 +60,7 @@ model Project {
   installCommand       installCommands @default(NPM_INSTALL) @map("install_command")
   buildCommand         BuildCommands   @default(NPM_RUN_BUILD) @map("build_command")
   environmentVariables Json?           @map("environment_variables")
+  framework            String
   Deployment           Deployment[]
 
   createdAt DateTime @default(now())

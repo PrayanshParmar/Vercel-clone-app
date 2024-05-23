@@ -2,6 +2,7 @@ import { currentProfile } from "@/lib/current-profile";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import Dashboard from "@/components/dashboard/dashboard";
+import { userProjects } from "@/lib/user-projects";
 
 interface usernameProjectProps {
   params: { usernameProject: string };
@@ -23,8 +24,9 @@ const Page = async ({ params }: usernameProjectProps) => {
     return redirect("/");
   }
 
+  
   return(
-    <Dashboard User={profile} />
+    <Dashboard User={profile}/>
   )
 };
 
