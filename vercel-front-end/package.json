@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate && echo 'yes' | prisma db push"
+    "postinstall": "prisma generate && echo 'yes' | npx prisma db push"
   },
   "dependencies": {
     "@aws-sdk/client-ecs": "^3.569.0",
