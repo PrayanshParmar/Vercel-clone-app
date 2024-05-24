@@ -22,6 +22,7 @@ import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import FeedbackPopover from "./navbar-component/feedback-popover";
 import { imagePath } from "@/lib/image-path";
 import { Skeleton } from "./ui/skeleton";
+import Link from "next/link";
 
 const NavBar = async () => {
   const profile = await currentProfile();
@@ -122,9 +123,9 @@ const NavBar = async () => {
               <AvatarImage src={profile.imageUrl} alt={profile.username} />
               <AvatarFallback><Skeleton/></AvatarFallback>
             </Avatar>
-            <div className="px-2">
+            <Link href={`/dashboard/${profile.username}-projects`} className="px-2">
               <span className=" font-semibold text-[15px] capitalize">{`${profile.username}'s projects`}</span>
-            </div>
+            </Link >
             <div className=" hidden md:flex">
               <Badge variant="secondary" className=" text-[12px]">
                 Hobby

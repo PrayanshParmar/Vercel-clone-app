@@ -57,7 +57,7 @@ const onclick = (name: string) => {
             {Project?.map((project, index) => (
               <CommandItem className="cursor-pointer flex items-center  gap-2 dark:hover:bg-zinc-900 hover:bg-zinc-100 hover:rounded" onSelect={() => onclick(project.name)} key={index}>
                 <div className=" flex items-center " >
-                <Avatar className=" rounded-none  ">
+                <Avatar className=" rounded-none  items-center  ">
                 <AvatarImage className=" w-7 h-7" src={`/frameworks/${project.framework}.svg`}/>
                 <AvatarFallback><Skeleton/></AvatarFallback>
               </Avatar>
