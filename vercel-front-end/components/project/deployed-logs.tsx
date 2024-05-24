@@ -16,9 +16,7 @@ import { useRouter } from "next/navigation";
 import { User } from "@prisma/client";
 import { toast } from "../ui/use-toast";
 
-const API_SERVER_URL = process.env.API_SERVER;
 
-console.log(API_SERVER_URL);
 interface DeployedLogsProps {
   deployId: string;
   projectId: string;
@@ -42,10 +40,10 @@ const DeployedLogs = ({ projectName, deployId, projectId, setFetchingComplete, u
   const router = useRouter();
   const fetchLogs = async () => {
     const response = await fetch(
-      `https://csazbvntor3tl6bw4vpnzx2fby0lelhs.lambda-url.ap-south-1.on.aws/api/v1/logs/${deployId}`
+      `https://logs.hostiffy.xyz/api/v1/logs/${deployId}`
     );
     return response.json();
-  };
+  }; 
 
   const { data, isPending, refetch } = useQuery({
     queryKey: ["logs", deployId],
@@ -66,7 +64,7 @@ const DeployedLogs = ({ projectName, deployId, projectId, setFetchingComplete, u
         variant: "success",
         title: "Deployment completed",
       });
-      router.push(`/new/${user.username}-projects/${projectName}`)
+      router.push(`/dashboard/${user.username}-projects/${projectName}`)
       
     },
   });
