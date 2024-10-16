@@ -74,20 +74,8 @@ Hostiffy is a full-stack platform that simplifies front-end web app deployment. 
 3. **Configure Environment Variables**:
    - Create a `.env` file with necessary variables for PostgreSQL, ClickHouse, AWS, Clerk.js, etc.
 
-4. **Run the Development Environment**:
-   ```bash
-   docker-compose up
-   ```
+4. **Run the App**:
 
-5. **Run the App**:
-   - Frontend:
-     ```bash
-     npm run dev
-     ```
-   - Backend:
-     ```bash
-     npm run server
-     ```
 
 ## Deployment
 
