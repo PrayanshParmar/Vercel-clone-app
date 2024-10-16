@@ -1,7 +1,3 @@
-Here’s a GitHub README template for your full-stack project (Hostiffy-like platform):
-
----
-
 # Hostiffy - Web App Deployment Platform
 
 Hostiffy is a full-stack platform that simplifies front-end web app deployment. It allows users to manage, deploy, and monitor their projects seamlessly with real-time feedback.
